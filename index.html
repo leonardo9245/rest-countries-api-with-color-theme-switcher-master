@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Countries</title>
+    <link rel="stylesheet" href="style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css"
+      integrity="sha512-SzlrxWUlpfuzQ+pcUCosxcglQRNAq/DZjVsC0lE40xsADsfeQoEypE+enwcOiGjk/bSuGGKHEyjSoQ1zVisanQ=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <script src="/script.js" defer></script>
+  </head>
+  <body>
+    <header>
+      <h1>Where in the world?</h1>
+      <button id="page-mode" onclick="lightMode()">
+        <i class="fa-solid fa-sun"></i>Light Mode
+      </button>
+    </header>
+    <main>
+      <div id="search-box">
+        <input
+          type="text"
+          name="search-countries"
+          id="search-countries"
+          placeholder="Search for a country..."
+        />
+        <select id="filter-countries">
+          <option value="all">All</option>
+        </select>
+      </div>
+      <div id="countries"></div>
+    </main>
+  </body>
+</html>
