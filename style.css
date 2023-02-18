@@ -311,5 +311,6 @@ select {
 
   .border-details {
     margin: 2rem auto;
+    margin-left: 1rem;
   }
 }
