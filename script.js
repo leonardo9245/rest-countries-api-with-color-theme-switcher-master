@@ -24,7 +24,7 @@ const createCountryElement = () => {
   };
 
   countriesList[0].forEach(val => {
-    countriesEl.innerHTML += `<div id="${val.name}" class="country-box ${
+    countriesEl.innerHTML += `<div class="country-box ${
       val.region
     } " onclick="location.href='/details/details.html';"><img src="${
       val.flags.svg
@@ -136,8 +136,12 @@ searchInput.addEventListener('input', e => {
 document.addEventListener('click', e => {
   const targetEl = e.target;
   const parentEl = targetEl.closest('div');
+
   if (parentEl && parentEl.classList.contains('country-box')) {
-    saveLocalStoragePageInfo(parentEl.id, bodyTypeLight);
+    const getChild = parentEl.lastChild;
+    const getTitle = getChild.firstChild.innerText;
+
+    saveLocalStoragePageInfo(getTitle, bodyTypeLight);
   }
 });
 
