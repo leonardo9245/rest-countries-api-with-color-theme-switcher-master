@@ -5,7 +5,7 @@ var ligthMode;
 const getLocalStorageInfo = () => {
   let country;
   let body = document.querySelector('body');
-  const info = JSON.parse(localStorage.getItem('country')) || {};
+  const info = JSON.parse(sessionStorage.getItem('country')) || {};
 
   country = info.country;
   ligthMode = info.light;
@@ -40,7 +40,6 @@ const getCountryByCode = async code => {
 };
 
 const showInfoCountry = list => {
-  console.log(list);
   const getCurrencies = () => {
     let currenciesListName = [];
     let currenciesListSymbol = [];
@@ -49,10 +48,10 @@ const showInfoCountry = list => {
       currenciesListName.push(i.name);
     }
 
-    let formatName = currenciesListName.splice(',').join(', ');
-    let formatSymbol = currenciesListSymbol.splice(',').join(', ');
+    let formatName = currenciesListName.join(', ');
+    let formatSymbol = currenciesListSymbol.join(', ');
 
-    let format = formatSymbol + ' ' + formatName;
+    let format = formatSymbol + '  ' + formatName;
 
     return format;
   };
@@ -62,12 +61,11 @@ const showInfoCountry = list => {
     for (let i of list.languages) {
       languagesList.push(i.name);
     }
-    return languagesList.splice(',').join(', ');
+
+    return languagesList.join(', ');
   };
 
-  const formatNumber = number => {
-    return number.toLocaleString('en');
-  };
+  const formatNumber = number => number.toLocaleString('en');
 
   container.innerHTML = `
   <div class="flag-details">

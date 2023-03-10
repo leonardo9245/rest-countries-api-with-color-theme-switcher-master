@@ -10,18 +10,10 @@ var bodyTypeLight = false;
 window.onload = function () {
   filterBtn.selectIndex = 0;
   searchInput.value = '';
-  const info = JSON.parse(localStorage.getItem('country')) || {};
-  if (info.light) {
-    lightMode();
-  }
 };
 
-//onclick="location.href='/details/details.html';
-//onclick="location.href='/details/details.html';"
 const createCountryElement = () => {
-  const formatNumber = number => {
-    return number.toLocaleString('en');
-  };
+  const formatNumber = number => number.toLocaleString('en');
 
   countriesList[0].forEach(val => {
     countriesEl.innerHTML += `<div class="country-box ${
@@ -40,29 +32,25 @@ const createCountryElement = () => {
 };
 
 const filterOptions = () => {
-  let options = [];
-  countriesList[0].forEach(value => {
-    options.push(value.region);
-  });
+  const options = countriesList[0].map(val => val.region);
 
-  let newOptions = options.filter((i, n) => options.indexOf(i) === n);
+  const newOptions = options.filter((i, n) => options.indexOf(i) === n);
 
-  newOptions.forEach(val => {
-    filterBtn.innerHTML += `<option value="${val}">${val}</option>`;
-  });
+  filterBtn.innerHTML += newOptions
+    .map(val => `<option value="${val}">${val}</option>`)
+    .join('');
 };
 
 const getAllcountries = async () => {
   const resp = await fetch('https://restcountries.com/v2/all');
   const data = await resp.json();
 
-  //console.log(data[0]);
   countriesList.push(data);
   createCountryElement();
   filterOptions();
 };
 
-const lightMode = () => {
+const toggleLightMode = () => {
   const body = document.querySelector('body');
   const button = document.getElementById('page-mode');
   const elements = document.querySelectorAll(
@@ -83,24 +71,16 @@ const lightMode = () => {
   bodyTypeLight = !bodyTypeLight;
 };
 
-const FilterCountries = value => {
+const filterCountries = value => {
   let countries = document.querySelectorAll('.country-box');
 
-  switch (value) {
-    case 'all':
-      countries.forEach(countries => (countries.style.display = 'block'));
-      break;
-    case value:
-      countries.forEach(val => {
-        val.classList.contains(value)
-          ? (val.style.display = 'block')
-          : (val.style.display = 'none');
-      });
-
-      break;
-    default:
-      break;
-  }
+  countries.forEach(country => {
+    if (value === 'all' || country.classList.contains(value)) {
+      country.style.display = 'block';
+    } else {
+      country.style.display = 'none';
+    }
+  });
 };
 
 const getSearchCountry = search => {
@@ -118,8 +98,8 @@ const getSearchCountry = search => {
   });
 };
 
-const saveLocalStoragePageInfo = (value, bodyMode) => {
-  localStorage.setItem(
+const savePageInfo = (value, bodyMode) => {
+  sessionStorage.setItem(
     'country',
     JSON.stringify({ country: value, light: bodyMode })
   );
@@ -141,14 +121,14 @@ document.addEventListener('click', e => {
     const getChild = parentEl.lastChild;
     const getTitle = getChild.firstChild.innerText;
 
-    saveLocalStoragePageInfo(getTitle, bodyTypeLight);
+    savePageInfo(getTitle, bodyTypeLight);
   }
 });
 
 filterBtn.addEventListener('change', e => {
   const filterValue = e.target.value;
 
-  FilterCountries(filterValue);
+  filterCountries(filterValue);
 });
 
 getAllcountries();
