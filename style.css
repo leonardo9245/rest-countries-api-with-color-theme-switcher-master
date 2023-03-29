@@ -86,6 +86,8 @@ select {
 .country-box {
   width: 20%;
   min-width: 300px;
+  min-height: 100%;
+  margin-bottom: 1rem;
   background-color: var(--Element-Background);
   border-radius: 5px;
   cursor: pointer;
@@ -110,7 +112,7 @@ select {
 .country-details {
   padding: 1.5rem 2rem;
   width: 100%;
-  height: 200px;
+  height: 100%;
 }
 
 .country-box img {

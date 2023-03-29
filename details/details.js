@@ -1,8 +1,9 @@
 const container = document.querySelector('.container-detail');
 var ligthMode;
+
 //https://restcountries.com/v3.1/name/{name}?fullText=true
 
-const getLocalStorageInfo = () => {
+const getSessionStorageInfo = () => {
   let country;
   let body = document.querySelector('body');
   const info = JSON.parse(sessionStorage.getItem('country')) || {};
@@ -17,13 +18,6 @@ const getLocalStorageInfo = () => {
   getCountry(country);
 };
 
-const saveLocalStoragePageInfo = value => {
-  localStorage.setItem(
-    'country',
-    JSON.stringify({ country: value, light: ligthMode })
-  );
-};
-
 const getCountry = async name => {
   const resp = await fetch(`https://restcountries.com/v2/name/${name}`);
   const data = await resp.json();
@@ -36,11 +30,11 @@ const getCountryByCode = async code => {
   const data = await resp.json();
 
   showInfoCountry(data);
-  saveLocalStoragePageInfo(data.name);
 };
 
 const showInfoCountry = list => {
   const getCurrencies = () => {
+    console.log(list);
     let currenciesListName = [];
     let currenciesListSymbol = [];
     for (let i of list.currencies) {
@@ -115,4 +109,4 @@ const showInfoCountry = list => {
     }
   }
 };
-getLocalStorageInfo();
+getSessionStorageInfo();
