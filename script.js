@@ -1,8 +1,10 @@
+
 //index page variables
 const searchInput = document.getElementById('search-countries');
 const countriesEl = document.getElementById('countries');
 const countriesBox = document.querySelector('.country-box');
 const filterBtn = document.getElementById('filter-countries');
+const sessionInfo = JSON.parse(sessionStorage.getItem('country') ) || ''
 const countriesList = [];
 var bodyTypeLight = false;
 //functions index page
@@ -10,13 +12,20 @@ var bodyTypeLight = false;
 window.onload = function () {
   filterBtn.selectIndex = 0;
   searchInput.value = '';
+
+ if( sessionInfo != ''){
+  bodyTypeLight = sessionInfo.light
+  toggleLightMode()
+ }
+
 };
 
 const createCountryElement = () => {
   const formatNumber = number => number.toLocaleString('en');
 
-  countriesList[0].forEach(val => {
-    countriesEl.innerHTML += `<div class="country-box ${
+
+  countriesList[0].forEach((val, index) => {
+    countriesEl.innerHTML += `<div id="${index}" class="country-box ${
       val.region
     } " onclick="location.href='/details/details.html';"><img src="${
       val.flags.svg
@@ -27,7 +36,7 @@ const createCountryElement = () => {
     )}</span></p> <p>Region: <span>${val.region}</span></p> <p>Capital: <span>${
       val.capital
     }</span></p></div></div>`;
-    //console.log(val);
+
   });
 };
 
@@ -41,8 +50,8 @@ const filterOptions = () => {
     .join('');
 };
 
-const getAllcountries = async () => {
-  const resp = await fetch('https://restcountries.com/v2/all');
+const getCountries = async () => {
+  const resp = await fetch('./data.json');
   const data = await resp.json();
 
   countriesList.push(data);
@@ -50,25 +59,47 @@ const getAllcountries = async () => {
   filterOptions();
 };
 
-const toggleLightMode = () => {
+
+
+const toggleLightMode = (toggle) => {
   const body = document.querySelector('body');
   const button = document.getElementById('page-mode');
   const elements = document.querySelectorAll(
     'header, input, select, country-box'
   );
 
-  body.classList.toggle('light-mode');
-  button.classList.toggle('light-mode');
+
+  if(toggle === 'toggle'){
+    bodyTypeLight = !bodyTypeLight
+    sessionStorage.setItem(
+      'country',
+      JSON.stringify({ id: sessionInfo.id ? sessionInfo.id : 0, light: bodyTypeLight })
+    );
+  }
+
+  if(bodyTypeLight){
+    body.classList.add('light-mode');
+    button.classList.add('light-mode');
+
+
+  for (let i of elements) {
+    i.classList.add('light-mode');
+  }
+  }else{
+    body.classList.remove('light-mode');
+    button.classList.remove('light-mode');
+
+    for (let i of elements) {
+      i.classList.remove('light-mode');
+    }
+  }
+
+
 
   button.classList.contains('light-mode')
     ? (button.innerHTML = '<i class="fa-solid fa-moon"></i>Dark Mode')
     : (button.innerHTML = '<i class="fa-solid fa-sun"></i>Light Mode');
 
-  for (let i of elements) {
-    i.classList.toggle('light-mode');
-  }
-
-  bodyTypeLight = !bodyTypeLight;
 };
 
 const filterCountries = value => {
@@ -98,10 +129,10 @@ const getSearchCountry = search => {
   });
 };
 
-const savePageInfo = (value, bodyMode) => {
+const savePageInfo = (id, bodyMode) => {
   sessionStorage.setItem(
     'country',
-    JSON.stringify({ country: value, light: bodyMode })
+    JSON.stringify({ id: id, light: bodyMode })
   );
 };
 
@@ -117,11 +148,12 @@ document.addEventListener('click', e => {
   const targetEl = e.target;
   const parentEl = targetEl.closest('div');
 
-  if (parentEl && parentEl.classList.contains('country-box')) {
-    const getChild = parentEl.lastChild;
-    const getTitle = getChild.firstChild.innerText;
 
-    savePageInfo(getTitle, bodyTypeLight);
+  if (parentEl && parentEl.classList.contains('country-box')) {
+    const getChild = parentEl;
+    const getId = getChild.id;
+
+    savePageInfo(getId, bodyTypeLight);
   }
 });
 
@@ -131,4 +163,4 @@ filterBtn.addEventListener('change', e => {
   filterCountries(filterValue);
 });
 
-getAllcountries();
+getCountries();

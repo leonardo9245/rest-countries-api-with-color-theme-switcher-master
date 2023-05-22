@@ -1,40 +1,49 @@
 const container = document.querySelector('.container-detail');
-var ligthMode;
+ const sessionStorageInfo = JSON.parse(sessionStorage.getItem('country')) || {};
+var lightMode;
 
 //https://restcountries.com/v3.1/name/{name}?fullText=true
 
 const getSessionStorageInfo = () => {
-  let country;
+  let countryId;
   let body = document.querySelector('body');
-  const info = JSON.parse(sessionStorage.getItem('country')) || {};
 
-  country = info.country;
-  ligthMode = info.light;
+  countryId = sessionStorageInfo.id;
+  lightMode = sessionStorageInfo.light;
 
-  ligthMode
+  lightMode
     ? body.classList.add('light-mode')
     : body.classList.remove('light-mode');
 
-  getCountry(country);
+  getCountryById(countryId);
 };
 
-const getCountry = async name => {
-  const resp = await fetch(`https://restcountries.com/v2/name/${name}`);
+const getCountryById = async id => {
+  const resp = await fetch(`../data.json`);
   const data = await resp.json();
 
-  showInfoCountry(data[0]);
+  showInfoCountry(data[id]);
 };
 
 const getCountryByCode = async code => {
-  const resp = await fetch(`https://restcountries.com/v2/alpha/${code}`);
+  const resp = await fetch(`../data.json`);
   const data = await resp.json();
 
-  showInfoCountry(data);
+  const country = data.find(data => {
+    return Object.values(data).some(val => val === code)
+  })
+
+  let countryId = Object.values(data).indexOf(country)
+
+  sessionStorage.setItem('country',
+    JSON.stringify({id: countryId, light: lightMode})
+  )
+
+  showInfoCountry(country)
 };
 
 const showInfoCountry = list => {
   const getCurrencies = () => {
-    console.log(list);
     let currenciesListName = [];
     let currenciesListSymbol = [];
     for (let i of list.currencies) {
